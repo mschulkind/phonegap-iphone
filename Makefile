@@ -33,14 +33,14 @@ CERTIFICATE = 'PhoneGap Support'
 
 all :: installer
 
-phonegap-lib: clean-phonegap-lib
+phonegap-lib:
 	@echo "Packaging PhoneGap Javascript..."
 	@$(MKPATH) $(BUILD_BAK)
 	@$(CP) -f PhoneGapLib/VERSION $(BUILD_BAK)
 	@$(MAKE) -C PhoneGapLib > /dev/null
-	@if [ -e "$(GIT)" ]; then \
-		echo -e '\n$(COMMIT_HASH)' >> PhoneGapLib/VERSION; \
-	fi	
+	@#if [[ -e "$(GIT)" && -d .git ]]; then \
+	#	echo -e '\n$(COMMIT_HASH)' >> PhoneGapLib/VERSION; \
+	#fi	
 	@echo "Done."
 
 xcode3-template: clean-xcode3-template
@@ -109,15 +109,15 @@ clean-phonegap-lib:
 
 phonegap-framework: phonegap-lib clean-phonegap-framework
 	@echo "Building PhoneGap.framework..."
-	@cd PhoneGapLib;$(XC) -target UniversalFramework > /dev/null;
+	@cd PhoneGapLib;$(XC) -target UniversalFramework
 	@cd ..
 	@echo "Done."
 	@$(CP) -R PhoneGapLib/build/Release-universal/PhoneGap.framework .
 	@$(CP) -R PhoneGap-based\ Application/www/index.html PhoneGap.framework/www
 	@find "PhoneGap.framework/www" | xargs grep 'src[ 	]*=[ 	]*[\\'\"]phonegap-*.*.js[\\'\"]' -sl | xargs -L1 sed -i "" "s/src[ 	]*=[ 	]*[\\'\"]phonegap-*.*.js[\\'\"]/src=\"phonegap-${PGVER}.js\"/g"
-	@if [ -e "$(GIT)" ]; then \
-	echo -e '\n$(COMMIT_HASH)' >> PhoneGap.framework/VERSION; \
-	fi	
+	@#if [ -e "$(GIT)" ]; then \
+	#echo -e '\n$(COMMIT_HASH)' >> PhoneGap.framework/VERSION; \
+	#fi	
 	@$(CP) -R PhoneGap-based\ Application/Resources/Capture.bundle/ PhoneGap.framework/Capture.bundle
 
 clean: clean-installer clean-phonegap-lib clean-xcode3-template clean-xcode4-template clean-phonegap-framework clean-markdown
