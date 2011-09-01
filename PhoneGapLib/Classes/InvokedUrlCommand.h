@@ -20,6 +20,7 @@
 @property(copy) NSString* className;
 @property(copy) NSString* methodName;
 
++ (InvokedUrlCommand*) commandFromUrl:(NSURL*)url;
 + (InvokedUrlCommand*) commandFromObject:(NSDictionary*)object;
 
 - (void) dealloc;
