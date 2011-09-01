@@ -150,6 +150,10 @@
 		8887FDA01090FBE7009987E8 /* Sound.m in Sources */ = {isa = PBXBuildFile; fileRef = 8887FD611090FBE7009987E8 /* Sound.m */; };
 		88BA573D109BB46F00FB5E78 /* Accelerometer.h in Headers */ = {isa = PBXBuildFile; fileRef = 88BA573B109BB46F00FB5E78 /* Accelerometer.h */; };
 		88BA573E109BB46F00FB5E78 /* Accelerometer.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BA573C109BB46F00FB5E78 /* Accelerometer.m */; };
+		C923E53514103EE800BCBAE0 /* PGURLExecProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = C923E53314103EE800BCBAE0 /* PGURLExecProtocol.h */; };
+		C923E53614103EE800BCBAE0 /* PGURLExecProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = C923E53414103EE800BCBAE0 /* PGURLExecProtocol.m */; };
+		C923E53814103EFA00BCBAE0 /* PGURLExecProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = C923E53414103EE800BCBAE0 /* PGURLExecProtocol.m */; };
+		C923E53914103F0100BCBAE0 /* PGURLExecProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = C923E53314103EE800BCBAE0 /* PGURLExecProtocol.h */; };
 		C937A4561337599E002C4C79 /* FileTransfer.h in Headers */ = {isa = PBXBuildFile; fileRef = C937A4541337599E002C4C79 /* FileTransfer.h */; };
 		C937A4571337599E002C4C79 /* FileTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = C937A4551337599E002C4C79 /* FileTransfer.m */; };
 /* End PBXBuildFile section */
@@ -222,6 +226,8 @@
 		88BA573B109BB46F00FB5E78 /* Accelerometer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Accelerometer.h; path = Classes/Accelerometer.h; sourceTree = "<group>"; };
 		88BA573C109BB46F00FB5E78 /* Accelerometer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Accelerometer.m; path = Classes/Accelerometer.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* PhoneGapLib_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneGapLib_Prefix.pch; sourceTree = SOURCE_ROOT; };
+		C923E53314103EE800BCBAE0 /* PGURLExecProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PGURLExecProtocol.h; path = Classes/PGURLExecProtocol.h; sourceTree = "<group>"; };
+		C923E53414103EE800BCBAE0 /* PGURLExecProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PGURLExecProtocol.m; path = Classes/PGURLExecProtocol.m; sourceTree = "<group>"; };
 		C937A4541337599E002C4C79 /* FileTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileTransfer.h; path = Classes/FileTransfer.h; sourceTree = "<group>"; };
 		C937A4551337599E002C4C79 /* FileTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileTransfer.m; path = Classes/FileTransfer.m; sourceTree = "<group>"; };
 		D2AAC07E0554694100DB518D /* libPhoneGap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPhoneGap.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -284,6 +290,8 @@
 		888700D710922F56009987E8 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				C923E53314103EE800BCBAE0 /* PGURLExecProtocol.h */,
+				C923E53414103EE800BCBAE0 /* PGURLExecProtocol.m */,
 				30C684921407044A004C1A8E /* PGURLProtocol.h */,
 				30C684931407044A004C1A8E /* PGURLProtocol.m */,
 				30C6847E1406CB38004C1A8E /* PGWhitelist.h */,
@@ -427,6 +435,7 @@
 				30B39EC013D0268B0009682A /* PGSplashScreen.h in Headers */,
 				30E563D113E217EC00C949AA /* NSMutableArray+QueueAdditions.h in Headers */,
 				30C684951407044B004C1A8E /* PGURLProtocol.h in Headers */,
+				C923E53914103F0100BCBAE0 /* PGURLExecProtocol.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,6 +477,7 @@
 				1F2BECC013F9785B00A93BF6 /* Battery.h in Headers */,
 				30C684801406CB38004C1A8E /* PGWhitelist.h in Headers */,
 				30C684941407044B004C1A8E /* PGURLProtocol.h in Headers */,
+				C923E53514103EE800BCBAE0 /* PGURLExecProtocol.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -632,6 +642,7 @@
 				30E563D213E217EC00C949AA /* NSMutableArray+QueueAdditions.m in Sources */,
 				30C684831406CB38004C1A8E /* PGWhitelist.m in Sources */,
 				30C684971407044B004C1A8E /* PGURLProtocol.m in Sources */,
+				C923E53814103EFA00BCBAE0 /* PGURLExecProtocol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -671,6 +682,7 @@
 				1F2BECC113F9785B00A93BF6 /* Battery.m in Sources */,
 				30C684821406CB38004C1A8E /* PGWhitelist.m in Sources */,
 				30C684961407044B004C1A8E /* PGURLProtocol.m in Sources */,
+				C923E53614103EE800BCBAE0 /* PGURLExecProtocol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,6 +703,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PhoneGapLib_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = PhoneGap;
@@ -708,6 +721,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PhoneGapLib_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = PhoneGap;
@@ -778,6 +792,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				LINK_WITH_STANDARD_LIBRARIES = NO;
@@ -806,6 +821,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				LINK_WITH_STANDARD_LIBRARIES = NO;

@@ -15,6 +15,7 @@
 #import "Connection.h"
 
 #import "PGURLProtocol.h"
+#import "PGURLExecProtocol.h"
 #import "PGWhitelist.h"
 #import "InvokedUrlCommand.h"
 #import "PhoneGapDelegate.h"
@@ -74,6 +75,7 @@
                                                    object:nil];
         
         [PGURLProtocol registerPGHttpURLProtocol];
+        [PGURLExecProtocol registerPGURLExecProtocol];
     }
     return self; 
 }
@@ -697,6 +699,9 @@ BOOL gSplashScreenShown = NO;
     else if ([url isFileURL])
     {
         return YES;
+    }
+    else if ([[url scheme] isEqualToString:@"urlexec"]) {
+        return NO;
     }
     else if ([self.whitelist schemeIsAllowed:[url scheme]])
     {            
