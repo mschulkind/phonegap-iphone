@@ -635,19 +635,25 @@ BOOL gSplashScreenShown = NO;
  */
 - (void)flushCommandQueue
 {
-    [self.webView stringByEvaluatingJavaScriptFromString:
-        @"PhoneGap.commandQueueFlushing = true"];
+    // Dispatch flushes using GCD to work around some iOS weirdness. One
+    // specific weirdness is that an outstanding UIWebView delegate call seems
+    // to block UITableView cellForRow calls when in UITrackingRunLoopMode.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.webView stringByEvaluatingJavaScriptFromString:
+            @"PhoneGap.commandQueueFlushing = true"];
 
-    // Keep executing the command queue until no commands get executed.
-    // This ensures that commands that are queued while executing other
-    // commands are executed as well.
-    int numExecutedCommands = 0;
-    do {
-        numExecutedCommands = [self executeQueuedCommands];
-    } while (numExecutedCommands != 0);
+        // Keep executing the command queue until no commands get executed.
+        // This ensures that commands that are queued while executing other
+        // commands are executed as well.
+        int numExecutedCommands = 0;
+        do {
+            numExecutedCommands = [self executeQueuedCommands];
+            //NSLog(@"executed %d", numExecutedCommands);
+        } while (numExecutedCommands != 0);
 
-    [self.webView stringByEvaluatingJavaScriptFromString:
-        @"PhoneGap.commandQueueFlushing = false"];
+        [self.webView stringByEvaluatingJavaScriptFromString:
+            @"PhoneGap.commandQueueFlushing = false"];
+    });
 }
 
 /**
