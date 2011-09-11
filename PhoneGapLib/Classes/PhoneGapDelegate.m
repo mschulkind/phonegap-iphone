@@ -664,10 +664,10 @@ BOOL gSplashScreenShown = NO;
      * Execute any commands queued with PhoneGap.exec() on the JS side.
      * The part of the URL after gap:// is irrelevant.
      */
-     if ([[url scheme] isEqualToString:@"gap"]) {
+    if ([[url scheme] isEqualToString:@"gap"]) {
         [self flushCommandQueue];
         return NO;
-     }
+    }
     /*
      * If a URL is being loaded that's a file/http/https URL, just load it internally
      */
