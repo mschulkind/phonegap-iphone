@@ -243,12 +243,11 @@ PhoneGap.exec = function() {
 }
 
 /**
- * Called by native code to retrieve all queued commands and clear the queue.
+ * Called by native code to retrieve and clear 50 queued commands from the
+ * queue at a time.
  */
 PhoneGap.getAndClearQueuedCommands = function() {
-  json = JSON.stringify(PhoneGap.commandQueue);
-  PhoneGap.commandQueue = [];
-  return json;
+  return JSON.stringify(PhoneGap.commandQueue.splice(0, 50));
 }
 
 /**

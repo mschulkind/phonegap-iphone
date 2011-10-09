@@ -647,8 +647,9 @@ BOOL gSplashScreenShown = NO;
         // commands are executed as well.
         int numExecutedCommands = 0;
         do {
+            NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
             numExecutedCommands = [self executeQueuedCommands];
-            //NSLog(@"executed %d", numExecutedCommands);
+            [pool drain];
         } while (numExecutedCommands != 0);
 
         [self.webView stringByEvaluatingJavaScriptFromString:
