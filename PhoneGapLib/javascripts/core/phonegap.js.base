@@ -224,7 +224,7 @@ PhoneGap.exec = function() {
         }
     }
 
-    // Stringify and queue the command. We stringify to command now to
+    // Stringify and queue the command. We stringify the command now to
     // effectively clone the command arguments in case they are mutated before
     // the command is executed.
     PhoneGap.commandQueue.push(JSON.stringify(command));
