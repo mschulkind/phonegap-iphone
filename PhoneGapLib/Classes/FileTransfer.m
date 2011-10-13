@@ -83,10 +83,10 @@
 	[req setValue:contentType forHTTPHeaderField:@"Content-Type"];
     //Content-Type: multipart/form-data; boundary=*****com.phonegap.formBoundary
 	[req setValue:@"XMLHttpRequest" forHTTPHeaderField:@"X-Requested-With"];
-	NSString* userAgent = [[self.webView request] valueForHTTPHeaderField:@"User-agent"];
-	if(userAgent) {
-		[req setValue: userAgent forHTTPHeaderField:@"User-Agent"];
-	}
+	//NSString* userAgent = [[self.webView request] valueForHTTPHeaderField:@"User-agent"];
+	//if(userAgent) {
+		//[req setValue: userAgent forHTTPHeaderField:@"User-Agent"];
+	//}
 
     
 	NSMutableData *postBody = [NSMutableData data];

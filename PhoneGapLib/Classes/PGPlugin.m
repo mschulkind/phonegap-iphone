@@ -14,7 +14,6 @@
 
 
 @implementation PGPlugin
-@synthesize webView;
 @synthesize settings;
 
 
@@ -35,8 +34,6 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMemoryWarning) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenURL:) name:PGPluginHandleOpenURLNotification object:nil];
         
-		self.webView = theWebView;
-		
 		// You can listen to more app notifications, see:
 		// http://developer.apple.com/library/ios/#DOCUMENTATION/UIKit/Reference/UIApplication_Class/Reference/Reference.html#//apple_ref/doc/uid/TP40006728-CH3-DontLinkElementID_4
 		/*
@@ -112,7 +109,6 @@
 - (void) dealloc
 {
 	self.settings = nil;
-	self.webView = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:PGPluginHandleOpenURLNotification object:nil];
@@ -132,12 +128,12 @@
 
 - (UIViewController*) appViewController
 {
-	return (UIViewController*)[self appDelegate].viewController;
+    return nil;
 }
 
 - (NSString*) writeJavascript:(NSString*)javascript
 {
-	return [self.webView stringByEvaluatingJavaScriptFromString:javascript];
+    return [[self appDelegate] writeJavascript:javascript];
 }
 
 - (NSString*) success:(PluginResult*)pluginResult callbackId:(NSString*)callbackId

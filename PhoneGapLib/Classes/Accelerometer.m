@@ -73,7 +73,7 @@
 	{
 		NSString * jsCallBack = nil;
 		jsCallBack = [[NSString alloc] initWithFormat:@"navigator.accelerometer._onAccelUpdate(%f,%f,%f);", acceleration.x, acceleration.y, acceleration.z];
-		[self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+		[self writeJavascript:jsCallBack];
 		[jsCallBack release];
 	}
 }

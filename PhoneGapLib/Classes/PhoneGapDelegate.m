@@ -32,7 +32,6 @@
 // readwrite access for self
 
 @property (nonatomic, readwrite, retain) IBOutlet UIWindow *window;
-@property (nonatomic, readwrite, retain) IBOutlet PhoneGapViewController *viewController;
 @property (nonatomic, readwrite, retain) IBOutlet UIActivityIndicatorView *activityView;
 @property (nonatomic, readwrite, retain) UIImageView *imageView;
 @property (nonatomic, readwrite, retain) NSMutableDictionary *pluginObjects;
@@ -50,7 +49,7 @@
 
 @implementation PhoneGapDelegate
 
-@synthesize window, webView, viewController, activityView, imageView;
+@synthesize window, activityView, imageView;
 @synthesize settings, invokedURL, loadFromString, orientationType, sessionKey;
 @synthesize pluginObjects, pluginsMap, whitelist;
 
@@ -193,9 +192,9 @@ static NSString *gapVersion;
         NSDictionary* classSettings = [self.settings objectForKey:className];
 
         if (classSettings) {
-            obj = [[NSClassFromString(className) alloc] initWithWebView:webView settings:classSettings];
+            obj = [[NSClassFromString(className) alloc] initWithWebView:nil settings:classSettings];
         } else {
-            obj = [[NSClassFromString(className) alloc] initWithWebView:webView];
+            obj = [[NSClassFromString(className) alloc] initWithWebView:nil];
         }
         
         if (obj != nil) {
@@ -338,7 +337,7 @@ static NSString *gapVersion;
         [self.window addSubview:self.activityView];
     }
     
-    self.activityView.center = self.viewController.view.center;
+    self.activityView.center = self.window.center;
     [self.activityView startAnimating];
     
     
@@ -386,35 +385,16 @@ BOOL gSplashScreenShown = NO;
     
     self.pluginsMap = [pluginsDict dictionaryWithLowercaseKeys];
     
-    self.viewController = [[[PhoneGapViewController alloc] init] autorelease];
-    
     NSNumber *enableLocation       = [self.settings objectForKey:@"EnableLocation"];
-    NSString *enableViewportScale  = [self.settings objectForKey:@"EnableViewportScale"];
-    
     
     // The first item in the supportedOrientations array is the start orientation (guaranteed to be at least Portrait)
     [[UIApplication sharedApplication] setStatusBarOrientation:[[supportedOrientations objectAtIndex:0] intValue]];
-    
-    // Set the supported orientations for rotation. If number of items in the array is > 1, autorotate is supported
-    viewController.supportedOrientations = supportedOrientations;
-    
     
     CGRect screenBounds = [ [ UIScreen mainScreen ] bounds ];
     self.window = [ [ [ UIWindow alloc ] initWithFrame:screenBounds ] autorelease ];
 
 
     self.window.autoresizesSubviews = YES;
-    CGRect webViewBounds = [ [ UIScreen mainScreen ] applicationFrame ] ;
-    webViewBounds.origin = screenBounds.origin;
-    if (!self.webView) {
-        self.webView = [[ [ UIWebView alloc ] initWithFrame:webViewBounds] autorelease];
-    }
-    self.webView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-    self.webView.scalesPageToFit = [enableViewportScale boolValue];
-    
-    viewController.webView = self.webView;
-    [self.viewController.view addSubview:self.webView];
-    
         
     /*
      * Fire up the GPS Service right away as it takes a moment for data to come back.
@@ -423,11 +403,6 @@ BOOL gSplashScreenShown = NO;
         [[self getCommandInstance:@"com.phonegap.geolocation"] startLocation:nil withDict:nil];
     }
     
-
-    self.webView.delegate = self;
-
-    [self.window addSubview:self.viewController.view];
-
     /*
      * webView
      * This is where we define the inital instance of the browser (WebKit) and give it a starting url/file.
@@ -451,15 +426,6 @@ BOOL gSplashScreenShown = NO;
         }
     }
     
-    if (!loadErr) {
-        NSURLRequest *appReq = [NSURLRequest requestWithURL:appURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20.0];
-        [self.webView loadRequest:appReq];
-    } else {
-        NSString* html = [NSString stringWithFormat:@"<html><body> %@ </body></html>", loadErr];
-        [self.webView loadHTMLString:html baseURL:nil];
-        self.loadFromString = YES;
-    }
-
     [self.window makeKeyAndVisible];
     
     if (self.loadFromString) {
@@ -523,7 +489,7 @@ BOOL gSplashScreenShown = NO;
 - (void) javascriptAlert:(NSString*)text
 {
     NSString* jsString = [NSString stringWithFormat:@"alert('%@');", text];
-    [webView stringByEvaluatingJavaScriptFromString:jsString];
+    [self writeJavascript:jsString];
 }
 
 /**
@@ -547,12 +513,6 @@ BOOL gSplashScreenShown = NO;
  */
 - (void)webViewDidFinishLoad:(UIWebView *)theWebView 
 {
-
-    // Share session key with the WebView by setting PhoneGap.sessionKey
-    NSString *sessionKeyScript = [NSString stringWithFormat:@"PhoneGap.sessionKey = \"%@\";", self.sessionKey];
-    [theWebView stringByEvaluatingJavaScriptFromString:sessionKeyScript];
-
-    
     NSDictionary *deviceProperties = [ self deviceProperties];
     NSMutableString *result = [[NSMutableString alloc] initWithFormat:@"DeviceInfo = %@;", [deviceProperties JSONFragment]];
     
@@ -568,7 +528,7 @@ BOOL gSplashScreenShown = NO;
     }
     
     NSLog(@"Device initialization: %@", result);
-    [theWebView stringByEvaluatingJavaScriptFromString:result];
+    [self writeJavascript:result];
     [result release];
     
     /*
@@ -581,10 +541,7 @@ BOOL gSplashScreenShown = NO;
     if (autoHideSplashScreenValue == nil || [autoHideSplashScreenValue boolValue]) {
         self.imageView.hidden = YES;
         self.activityView.hidden = YES;    
-        [self.window bringSubviewToFront:self.viewController.view];
     }
-    
-    [self.viewController didRotateFromInterfaceOrientation:(UIInterfaceOrientation)[[UIDevice currentDevice] orientation]];
 }
 
 
@@ -608,53 +565,56 @@ BOOL gSplashScreenShown = NO;
  *
  * Returns the number of executed commands.
  */
-- (int)executeQueuedCommands
-{
-    // Grab all the queued commands from the JS side.
-    NSString* queuedCommandsJSON =
-        [self.webView stringByEvaluatingJavaScriptFromString:
-        @"PhoneGap.getAndClearQueuedCommands()"];
+//- (int)executeQueuedCommands
+//{
+    //// Grab all the queued commands from the JS side.
+    //NSString* queuedCommandsJSON =
+        //[self.webView stringByEvaluatingJavaScriptFromString:
+        //@"PhoneGap.getAndClearQueuedCommands()"];
 
-    // Parse the returned JSON array.
-    SBJsonParser* jsonParser = [[[SBJsonParser alloc] init] autorelease];
-    NSArray* queuedCommands =
-        [jsonParser objectWithString:queuedCommandsJSON];
+    //// Parse the returned JSON array.
+    //SBJsonParser* jsonParser = [[[SBJsonParser alloc] init] autorelease];
+    //NSArray* queuedCommands =
+        //[jsonParser objectWithString:queuedCommandsJSON];
 
-    // Iterate over and execute all of the commands.
-    for (NSString* commandJson in queuedCommands) {
-        [self execute:
-            [InvokedUrlCommand commandFromObject:
-                [jsonParser objectWithString:commandJson]]];
-    }
+    //// Iterate over and execute all of the commands.
+    //for (NSString* commandJson in queuedCommands) {
+        ////NSLog(@"before execute: %@", commandJson);
+        //[self execute:
+            //[InvokedUrlCommand commandFromObject:
+                //[jsonParser objectWithString:commandJson]]];
+        ////NSLog(@"after execute");
+    //}
 
-    return [queuedCommands count];
-}
+    //return [queuedCommands count];
+//}
 
 /**
  * Repeatedly fetches and executes the command queue until it is empty.
  */
 - (void)flushCommandQueue
 {
-    // Dispatch flushes using GCD to work around some iOS weirdness. One
-    // specific weirdness is that an outstanding UIWebView delegate call seems
-    // to block UITableView cellForRow calls when in UITrackingRunLoopMode.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.webView stringByEvaluatingJavaScriptFromString:
-            @"PhoneGap.commandQueueFlushing = true"];
+    //// Dispatch flushes using GCD to work around some iOS weirdness. One
+    //// specific weirdness is that an outstanding UIWebView delegate call seems
+    //// to block UITableView cellForRow calls when in UITrackingRunLoopMode.
+    //dispatch_async(dispatch_get_main_queue(), ^{
+        //[self.webView stringByEvaluatingJavaScriptFromString:
+            //@"PhoneGap.commandQueueFlushing = true"];
 
-        // Keep executing the command queue until no commands get executed.
-        // This ensures that commands that are queued while executing other
-        // commands are executed as well.
-        int numExecutedCommands = 0;
-        do {
-            NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-            numExecutedCommands = [self executeQueuedCommands];
-            [pool drain];
-        } while (numExecutedCommands != 0);
+        //// Keep executing the command queue until no commands get executed.
+        //// This ensures that commands that are queued while executing other
+        //// commands are executed as well.
+        //int numExecutedCommands = 0;
+        //do {
+            //NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+            //numExecutedCommands = [self executeQueuedCommands];
+            ////NSLog(@"executed %d", numExecutedCommands);
+            //[pool drain];
+        //} while (numExecutedCommands != 0);
 
-        [self.webView stringByEvaluatingJavaScriptFromString:
-            @"PhoneGap.commandQueueFlushing = false"];
-    });
+        //[self.webView stringByEvaluatingJavaScriptFromString:
+            //@"PhoneGap.commandQueueFlushing = false"];
+    //});
 }
 
 /**
@@ -672,7 +632,7 @@ BOOL gSplashScreenShown = NO;
      * The part of the URL after gap:// is irrelevant.
      */
     if ([[url scheme] isEqualToString:@"gap"]) {
-        [self flushCommandQueue];
+        //[self flushCommandQueue];
         return NO;
     }
     /*
@@ -772,6 +732,11 @@ BOOL gSplashScreenShown = NO;
     return retVal;
 }
 
+- (NSString*)writeJavascript:(NSString*)javascript
+{
+    assert(false);
+}
+
 /*
  This method lets your application know that it is about to be terminated and purged from memory entirely
 */
@@ -817,7 +782,7 @@ BOOL gSplashScreenShown = NO;
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     //NSLog(@"%@",@"applicationWillEnterForeground");
-    [self.webView stringByEvaluatingJavaScriptFromString:@"PhoneGap.fireDocumentEvent('resume');"];
+    [self writeJavascript:@"PhoneGap.fireDocumentEvent('resume');"];
 }
 
 // This method is called to let your application know that it moved from the inactive to active state. 
@@ -833,7 +798,7 @@ BOOL gSplashScreenShown = NO;
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     //NSLog(@"%@",@"applicationDidEnterBackground");
-    [self.webView stringByEvaluatingJavaScriptFromString:@"PhoneGap.fireDocumentEvent('pause');"];
+    [self writeJavascript:@"PhoneGap.fireDocumentEvent('pause');"];
 }
 
 
@@ -849,7 +814,7 @@ BOOL gSplashScreenShown = NO;
 
     // Do something with the url here
     NSString* jsString = [NSString stringWithFormat:@"handleOpenURL(\"%@\");", url];
-    [self.webView stringByEvaluatingJavaScriptFromString:jsString];
+    [self writeJavascript:jsString];
     
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:PGPluginHandleOpenURLNotification object:url]];
     
@@ -861,7 +826,6 @@ BOOL gSplashScreenShown = NO;
     [PluginResult releaseStatus];
     self.pluginObjects = nil;
     self.pluginsMap    = nil;
-    self.viewController = nil;
     self.activityView = nil;
     self.window = nil;
     self.imageView = nil;

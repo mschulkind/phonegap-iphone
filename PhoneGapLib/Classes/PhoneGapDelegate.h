@@ -21,8 +21,6 @@
 }
 
 @property (nonatomic, readonly, retain) IBOutlet UIWindow *window;
-@property (nonatomic, readwrite, retain) IBOutlet UIWebView *webView;
-@property (nonatomic, readonly, retain) IBOutlet PhoneGapViewController *viewController;
 @property (nonatomic, readonly, retain) IBOutlet UIActivityIndicatorView *activityView;
 @property (nonatomic, readonly, retain) UIImageView *imageView;
 @property (nonatomic, readonly, retain) NSMutableDictionary *pluginObjects;
@@ -37,12 +35,13 @@
 + (NSString*) applicationDocumentsDirectory;
 + (NSString*) startPage;
 
-- (int)executeQueuedCommands;
+//- (int)executeQueuedCommands;
 - (void)flushCommandQueue;
 
 - (id) getCommandInstance:(NSString*)pluginName;
 - (void) javascriptAlert:(NSString*)text;
 - (BOOL) execute:(InvokedUrlCommand*)command;
+- (NSString*)writeJavascript:(NSString*)javascript;
 - (NSString*) appURLScheme;
 - (NSDictionary*) deviceProperties;
 
