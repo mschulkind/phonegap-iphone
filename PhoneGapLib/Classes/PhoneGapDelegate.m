@@ -431,6 +431,36 @@ BOOL gSplashScreenShown = NO;
     if (self.loadFromString) {
         self.imageView.hidden = YES;
     }
+
+    NSDictionary *deviceProperties = [ self deviceProperties];
+    NSMutableString *result = [[NSMutableString alloc] initWithFormat:@"DeviceInfo = %@;", [deviceProperties JSONFragment]];
+    
+    /* Settings.plist
+     * Read the optional Settings.plist file and push these user-defined settings down into the web application.
+     * This can be useful for supplying build-time configuration variables down to the app to change its behaviour,
+     * such as specifying Full / Lite version, or localization (English vs German, for instance).
+     */
+    
+    NSDictionary *temp = [[self class] getBundlePlist:@"Settings"];
+    if ([temp respondsToSelector:@selector(JSONFragment)]) {
+        [result appendFormat:@"\nwindow.Settings = %@;", [temp JSONFragment]];
+    }
+    
+    NSLog(@"Device initialization: %@", result);
+    [self writeJavascript:result];
+    [result release];
+    
+    /*
+     * Hide the Top Activity THROBBER in the Battery Bar
+     */
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+
+    id autoHideSplashScreenValue = [self.settings objectForKey:@"AutoHideSplashScreen"];
+    // if value is missing, default to yes
+    if (autoHideSplashScreenValue == nil || [autoHideSplashScreenValue boolValue]) {
+        self.imageView.hidden = YES;
+        self.activityView.hidden = YES;    
+    }
     
     return YES;
 }
@@ -513,35 +543,6 @@ BOOL gSplashScreenShown = NO;
  */
 - (void)webViewDidFinishLoad:(UIWebView *)theWebView 
 {
-    NSDictionary *deviceProperties = [ self deviceProperties];
-    NSMutableString *result = [[NSMutableString alloc] initWithFormat:@"DeviceInfo = %@;", [deviceProperties JSONFragment]];
-    
-    /* Settings.plist
-     * Read the optional Settings.plist file and push these user-defined settings down into the web application.
-     * This can be useful for supplying build-time configuration variables down to the app to change its behaviour,
-     * such as specifying Full / Lite version, or localization (English vs German, for instance).
-     */
-    
-    NSDictionary *temp = [[self class] getBundlePlist:@"Settings"];
-    if ([temp respondsToSelector:@selector(JSONFragment)]) {
-        [result appendFormat:@"\nwindow.Settings = %@;", [temp JSONFragment]];
-    }
-    
-    NSLog(@"Device initialization: %@", result);
-    [self writeJavascript:result];
-    [result release];
-    
-    /*
-     * Hide the Top Activity THROBBER in the Battery Bar
-     */
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-
-    id autoHideSplashScreenValue = [self.settings objectForKey:@"AutoHideSplashScreen"];
-    // if value is missing, default to yes
-    if (autoHideSplashScreenValue == nil || [autoHideSplashScreenValue boolValue]) {
-        self.imageView.hidden = YES;
-        self.activityView.hidden = YES;    
-    }
 }
 
 

@@ -224,22 +224,7 @@ PhoneGap.exec = function() {
         }
     }
 
-    // Stringify and queue the command. We stringify the command now to
-    // effectively clone the command arguments in case they are mutated before
-    // the command is executed.
-    PhoneGap.commandQueue.push(JSON.stringify(command));
-
-    // If the queue length is 1, then that means it was empty before we queued
-    // the given command, so let the native side know that we have some
-    // commands to execute, unless the queue is currently being flushed, in
-    // which case the command will be picked up without notification.
-    if (PhoneGap.commandQueue.length == 1 && !PhoneGap.commandQueueFlushing) {
-        if (!PhoneGap.gapBridge) {
-            PhoneGap.gapBridge = PhoneGap.createGapBridge();
-        }
-
-        PhoneGap.gapBridge.src = "gap://ready";
-    }
+    window.nativeExec(JSON.stringify(command));
 }
 
 /**
