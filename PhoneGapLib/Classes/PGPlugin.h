@@ -24,10 +24,7 @@ callerFileName:__FILE__ callerFunctionName:__PRETTY_FUNCTION__]) { return; }
 @interface PGPlugin : NSObject {
 }
 
-@property (nonatomic, retain) NSDictionary *settings;
-
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView settings:(NSDictionary*)classSettings;
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView;
+- (id) initWithWebView:(UIWebView*)theWebView;
 
 - (void) handleOpenURL:(NSNotification*)notification;
 - (void) onAppTerminate;

@@ -188,14 +188,7 @@ static NSString *gapVersion;
     id obj = [self.pluginObjects objectForKey:className];
     if (!obj) 
     {
-        // attempt to load the settings for this command class
-        NSDictionary* classSettings = [self.settings objectForKey:className];
-
-        if (classSettings) {
-            obj = [[NSClassFromString(className) alloc] initWithWebView:nil settings:classSettings];
-        } else {
-            obj = [[NSClassFromString(className) alloc] initWithWebView:nil];
-        }
+        obj = [[NSClassFromString(className) alloc] initWithWebView:nil];
         
         if (obj != nil) {
             [self.pluginObjects setObject:obj forKey:className];

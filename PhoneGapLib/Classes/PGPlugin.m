@@ -14,19 +14,8 @@
 
 
 @implementation PGPlugin
-@synthesize settings;
 
-
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView settings:(NSDictionary*)classSettings
-{
-    self = [self initWithWebView:theWebView];
-    if (self) {
-        self.settings = classSettings;
-	}
-    return self;
-}
-
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView
+- (id) initWithWebView:(UIWebView*)theWebView
 {
     self = [super init];
     if (self) {
@@ -108,7 +97,6 @@
 
 - (void) dealloc
 {
-	self.settings = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:PGPluginHandleOpenURLNotification object:nil];
