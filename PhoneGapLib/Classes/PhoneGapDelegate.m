@@ -90,11 +90,6 @@
     return @"www";
 }
 
-+ (NSString*) startPage
-{
-    return @"index.html";
-}
-
 + (BOOL) isIPad 
 {
 #ifdef UI_USER_INTERFACE_IDIOM
@@ -400,24 +395,6 @@ BOOL gSplashScreenShown = NO;
      * webView
      * This is where we define the inital instance of the browser (WebKit) and give it a starting url/file.
      */
-    
-    NSString* startPage = [[self class] startPage];
-    NSURL *appURL = [NSURL URLWithString:startPage];
-    NSString* loadErr = nil;
-    
-    if(![appURL scheme])
-    {
-        NSString* startFilePath = [[self class] pathForResource:startPage];
-        if (startFilePath == nil)
-        {
-            loadErr = [NSString stringWithFormat:@"ERROR: Start Page at '%@/%@' was not found.", [[self class] wwwFolderName], startPage];
-            NSLog(@"%@", loadErr);
-            appURL = nil;
-        }
-        else {
-            appURL = [NSURL fileURLWithPath:startFilePath];
-        }
-    }
     
     [self.window makeKeyAndVisible];
     

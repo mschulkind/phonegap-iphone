@@ -33,7 +33,6 @@
 + (NSString*) pathForResource:(NSString*)resourcepath;
 + (NSString*) phoneGapVersion;
 + (NSString*) applicationDocumentsDirectory;
-+ (NSString*) startPage;
 
 //- (int)executeQueuedCommands;
 - (void)flushCommandQueue;
