@@ -31,7 +31,6 @@
 
 // readwrite access for self
 
-@property (nonatomic, readwrite, retain) IBOutlet UIWindow *window;
 @property (nonatomic, readwrite, retain) IBOutlet UIActivityIndicatorView *activityView;
 @property (nonatomic, readwrite, retain) UIImageView *imageView;
 @property (nonatomic, readwrite, retain) NSMutableDictionary *pluginObjects;

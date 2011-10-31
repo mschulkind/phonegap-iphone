@@ -20,7 +20,7 @@
 {
 }
 
-@property (nonatomic, readonly, retain) IBOutlet UIWindow *window;
+@property (nonatomic, readwrite, retain) IBOutlet UIWindow *window;
 @property (nonatomic, readonly, retain) IBOutlet UIActivityIndicatorView *activityView;
 @property (nonatomic, readonly, retain) UIImageView *imageView;
 @property (nonatomic, readonly, retain) NSMutableDictionary *pluginObjects;
