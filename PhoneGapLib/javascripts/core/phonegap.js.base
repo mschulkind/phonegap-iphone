@@ -249,13 +249,8 @@ PhoneGap.callbackSuccess = function(callbackId, args) {
 
         // If result is to be sent to callback
         if (args.status == PhoneGap.callbackStatus.OK) {
-            try {
-                if (PhoneGap.callbacks[callbackId].success) {
-                       PhoneGap.callbacks[callbackId].success(args.message);
-                }
-            }
-            catch (e) {
-                console.log("Error in success callback: "+callbackId+" = "+e);
+            if (PhoneGap.callbacks[callbackId].success) {
+                   PhoneGap.callbacks[callbackId].success(args.message);
             }
         }
     
@@ -274,13 +269,8 @@ PhoneGap.callbackSuccess = function(callbackId, args) {
  */
 PhoneGap.callbackError = function(callbackId, args) {
     if (PhoneGap.callbacks[callbackId]) {
-        try {
-            if (PhoneGap.callbacks[callbackId].fail) {
-                PhoneGap.callbacks[callbackId].fail(args.message);
-            }
-        }
-        catch (e) {
-            console.log("Error in error callback: "+callbackId+" = "+e);
+        if (PhoneGap.callbacks[callbackId].fail) {
+            PhoneGap.callbacks[callbackId].fail(args.message);
         }
         
         // Clear callback if not expecting any more results
